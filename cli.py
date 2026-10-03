@@ -1,35 +1,25 @@
 import argparse
 import os
-
 from mygit.repository import GitRepository
-
 
 def find_repo():
     current = os.getcwd()
 
     while True:
         repo = os.path.join(current, ".mygit")
-
         if os.path.exists(repo):
             return repo
-
         parent = os.path.dirname(current)
 
         if parent == current:
             break
-
         current = parent
-
     return None
-
 
 def main():
     parser = argparse.ArgumentParser()
-
     subparsers = parser.add_subparsers(dest="command")
-
     subparsers.add_parser("init")
-
     add_parser = subparsers.add_parser("add")
     add_parser.add_argument("files", nargs="+")
 
@@ -51,12 +41,7 @@ def main():
 
     elif args.command == "commit":
         repo = GitRepository(find_repo())
-
-        commit_hash = repo.commit(
-            args.message,
-            "Milan <milan@example.com>"
-        )
-
+        commit_hash = repo.commit(args.message, "Milan <milan@example.com>")
         print(f"Commit created: {commit_hash[:7]}")
 
 
