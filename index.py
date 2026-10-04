@@ -1,14 +1,11 @@
 import os
 import struct
 
-
 class Index:
     def __init__(self, repo_path):
         self.repo_path = repo_path
         self.entries = {}
-
         self.index_path = os.path.join(repo_path, "index")
-
         self.load()
 
     def load(self):
@@ -22,7 +19,6 @@ class Index:
             return
 
         entry_count = struct.unpack(">I", data[8:12])[0]
-
         offset = 12
 
         for _ in range(entry_count):
@@ -46,22 +42,16 @@ class Index:
 
     def save(self):
         header = b'DIRC' + struct.pack(">II", 2, len(self.entries))
-
         entries_data = b''
 
         for path in sorted(self.entries.keys()):
             mode, obj_hash = self.entries[path]
 
             entry = struct.pack(">I", mode)
-
             entry += bytes.fromhex(obj_hash)
-
             path_bytes = path.encode()
-
             entry += struct.pack(">H", len(path_bytes))
-
             entry += path_bytes
-
             entries_data += entry
 
         with open(self.index_path, "wb") as f:
