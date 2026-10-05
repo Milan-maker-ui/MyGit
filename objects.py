@@ -3,7 +3,6 @@ import zlib
 import os
 import time
 
-
 class GitObject:
     def __init__(self, data):
         self.data = data
@@ -19,20 +18,16 @@ class GitObject:
 
     def save(self, repo_path):
         obj_dir = os.path.join(repo_path, "objects", self.hash[:2])
-
         os.makedirs(obj_dir, exist_ok=True)
-
         obj_path = os.path.join(obj_dir, self.hash[2:])
-
+        
         with open(obj_path, "wb") as f:
             f.write(self.compress())
-
 
 class Blob(GitObject):
     def __init__(self, data):
         header = f"blob {len(data)}".encode() + b'\\0'
         super().__init__(header + data)
-
 
 class Tree(GitObject):
     def __init__(self, entries):
@@ -46,9 +41,7 @@ class Tree(GitObject):
             )
 
         header = f"tree {len(tree_data)}".encode() + b'\\0'
-
         super().__init__(header + tree_data)
-
 
 class Commit(GitObject):
     def __init__(self, tree_hash, parent_hashes, author, message):
@@ -64,7 +57,5 @@ class Commit(GitObject):
         content += message + "\\n"
 
         data = content.encode()
-
         header = f"commit {len(data)}".encode() + b'\\0'
-
         super().__init__(header + data)
