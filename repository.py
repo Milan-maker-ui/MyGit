@@ -1,6 +1,5 @@
 import os
 import struct
-
 from mygit.index import Index
 from mygit.objects import Blob, Tree, Commit
 
@@ -30,15 +29,8 @@ class GitRepository:
 
         blob = Blob(content)
         blob.save(self.path)
-
         stat = os.stat(abs_path)
-
-        self.index.add(
-            file_path,
-            stat.st_mode,
-            blob.hash
-        )
-
+        self.index.add(file_path, stat.st_mode, blob.hash)
         self.index.save()
 
         return blob.hash
@@ -60,13 +52,7 @@ class GitRepository:
         )
 
         commit.save(self.path)
-
-        head_path = os.path.join(
-            self.path,
-            "refs",
-            "heads",
-            "master"
-        )
+        head_path = os.path.join(self.path, "refs", "heads", "master")
 
         with open(head_path, "w") as f:
             f.write(commit.hash)
